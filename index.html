@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>百货店返点计算器</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+  <div class="app">
+    <h1>百货店返点计算器</h1>
+
+    <section class="card">
+    <h2>报价历史</h2>
+    <div id="historyList">暂无历史报价</div>
+    <button onclick="clearHistory()">清空历史</button>
+    </section>
+
+    <section class="card">
+      <h2>每日汇率更新</h2>
+
+      <label>韩米汇率</label>
+      <input id="exchangeRate" type="number" step="0.1" value="221.3">
+
+      <label>乐天/新罗券价</label>
+      <input id="lotteRate" type="number" step="0.1" value="229">
+
+      <label>新世界券价</label>
+      <input id="shinsegaeRate" type="number" step="0.1" value="228">
+
+      <label>现代券价</label>
+      <input id="hyundaiRate" type="number" step="0.1" value="228.8">
+
+      <button onclick="saveRates()">保存今日汇率</button>
+      <button onclick="saveQuoteHistory()">保存到历史</button>
+      <button onclick="downloadQuoteImage()">生成报价图片</button>
+    </section>
+
+    <section class="card">
+      <h2>报价计算</h2>
+
+      <label>百货店</label>
+      <select id="store">
+        <option value="lotte">乐天/新罗</option>
+        <option value="shinsegae">新世界</option>
+        <option value="hyundai">现代</option>
+      </select>
+
+      <label>商品标价（韩元）</label>
+      <input id="price" type="number" placeholder="例如 24060000">
+
+      <label>返点比例</label>
+      <input id="rebate" type="number" step="0.1" placeholder="例如 8.5">
+
+      <button onclick="calculate()">计算</button>
+    </section>
+
+    <section class="card result">
+      <h2>计算结果</h2>
+      <pre id="resultText">请输入数据后点击计算</pre>
+      <button onclick="copyResult()">复制报价</button>
+    </section>
+    <section class="card">
+  <h2>图片报价预览</h2>
+
+  <div id="quoteCard">
+    <div class="quote-title">野猪购物返点</div>
+
+    <div class="quote-table">
+      <div class="quote-header">百货店标价</div>
+      <div class="quote-header">券</div>
+      <div class="quote-header">返点</div>
+      <div class="quote-header">汇率</div>
+
+      <div id="qc-price" class="quote-value">-</div>
+      <div id="qc-coupon" class="quote-value">-</div>
+      <div id="qc-rebate" class="quote-value">-</div>
+      <div id="qc-rate" class="quote-value">-</div>
+    </div>
+
+    <div class="quote-lines">
+      <div id="qc-line1">① 实际付款 -</div>
+      <div id="qc-line2">② 机场退税 -</div>
+      <div id="qc-line3">③ 最终到手价 -</div>
+    </div>
+  </div>
+
+  <button onclick="downloadQuoteImage()">一键生成图片</button>
+</section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
