@@ -50,54 +50,113 @@ function getStoreName() {
   return "";
 }
 
-// 600万以下阶梯退税表
-// 这里你可以按图片内容继续补充或修改
+// NICE TAX FREE 退税表
+// 600万以下：阶梯退税
+// 600万以上：标价 × 0.0818
 const taxTable = [
-  { min: 30000, refund: 1500 },
-  { min: 50000, refund: 3500 },
+  { min: 30000, refund: 2000 },
+  { min: 50000, refund: 3000 },
   { min: 75000, refund: 5000 },
-  { min: 100000, refund: 7000 },
-  { min: 125000, refund: 9000 },
-  { min: 150000, refund: 11000 },
-  { min: 175000, refund: 13000 },
-  { min: 200000, refund: 15000 },
-  { min: 225000, refund: 17000 },
-  { min: 250000, refund: 19000 },
-  { min: 275000, refund: 21000 },
-  { min: 300000, refund: 23000 },
-  { min: 325000, refund: 25000 },
-  { min: 350000, refund: 27000 },
-  { min: 375000, refund: 29000 },
-  { min: 400000, refund: 31000 },
-  { min: 425000, refund: 33000 },
-  { min: 450000, refund: 35000 },
-  { min: 475000, refund: 37000 },
-  { min: 500000, refund: 39000 },
-  { min: 550000, refund: 43000 },
-  { min: 600000, refund: 47000 },
-  { min: 650000, refund: 51000 },
-  { min: 700000, refund: 55000 },
-  { min: 750000, refund: 59000 },
-  { min: 800000, refund: 63000 },
-  { min: 850000, refund: 67000 },
-  { min: 900000, refund: 71000 },
-  { min: 950000, refund: 75000 },
-  { min: 1000000, refund: 79000 },
-  { min: 1500000, refund: 119000 },
-  { min: 2000000, refund: 159000 },
-  { min: 2500000, refund: 199000 },
-  { min: 3000000, refund: 239000 },
-  { min: 3500000, refund: 279000 },
-  { min: 4000000, refund: 319000 },
-  { min: 4500000, refund: 359000 },
-  { min: 5000000, refund: 399000 },
-  { min: 5500000, refund: 439000 }
+  { min: 100000, refund: 6000 },
+  { min: 125000, refund: 8000 },
+  { min: 150000, refund: 9000 },
+  { min: 175000, refund: 10000 },
+  { min: 200000, refund: 12000 },
+  { min: 225000, refund: 13000 },
+  { min: 250000, refund: 15000 },
+  { min: 275000, refund: 17000 },
+  { min: 300000, refund: 19000 },
+  { min: 325000, refund: 21000 },
+  { min: 350000, refund: 23000 },
+  { min: 375000, refund: 25000 },
+  { min: 400000, refund: 27000 },
+  { min: 425000, refund: 28000 },
+  { min: 450000, refund: 30000 },
+  { min: 475000, refund: 32000 },
+  { min: 500000, refund: 35000 },
+  { min: 550000, refund: 37000 },
+  { min: 600000, refund: 41000 },
+  { min: 650000, refund: 45000 },
+  { min: 700000, refund: 50000 },
+  { min: 750000, refund: 53000 },
+  { min: 800000, refund: 57000 },
+  { min: 850000, refund: 60000 },
+  { min: 900000, refund: 65000 },
+  { min: 950000, refund: 68000 },
+  { min: 1000000, refund: 74000 },
+  { min: 1100000, refund: 80000 },
+  { min: 1200000, refund: 90000 },
+  { min: 1300000, refund: 95000 },
+  { min: 1400000, refund: 104000 },
+  { min: 1500000, refund: 110000 },
+  { min: 1600000, refund: 115000 },
+  { min: 1700000, refund: 127000 },
+  { min: 1800000, refund: 135000 },
+  { min: 1900000, refund: 140000 },
+  { min: 2000000, refund: 150000 },
+
+  { min: 2100000, refund: 155000 },
+  { min: 2200000, refund: 160000 },
+  { min: 2300000, refund: 170000 },
+  { min: 2400000, refund: 177000 },
+  { min: 2500000, refund: 185000 },
+  { min: 2600000, refund: 190000 },
+  { min: 2700000, refund: 200000 },
+  { min: 2800000, refund: 210000 },
+  { min: 2900000, refund: 215000 },
+  { min: 3000000, refund: 225000 },
+  { min: 3100000, refund: 230000 },
+  { min: 3200000, refund: 235000 },
+  { min: 3300000, refund: 240000 },
+  { min: 3400000, refund: 250000 },
+  { min: 3500000, refund: 260000 },
+  { min: 3600000, refund: 270000 },
+  { min: 3700000, refund: 280000 },
+  { min: 3800000, refund: 285000 },
+  { min: 3900000, refund: 290000 },
+  { min: 4000000, refund: 300000 },
+  { min: 4100000, refund: 310000 },
+  { min: 4200000, refund: 315000 },
+  { min: 4300000, refund: 320000 },
+  { min: 4400000, refund: 333000 },
+  { min: 4500000, refund: 340000 },
+  { min: 4600000, refund: 350000 },
+  { min: 4700000, refund: 360000 },
+  { min: 4800000, refund: 370000 },
+  { min: 4900000, refund: 380000 },
+  { min: 5000000, refund: 390000 },
+  { min: 5100000, refund: 400000 },
+  { min: 5200000, refund: 410000 },
+  { min: 5300000, refund: 420000 },
+  { min: 5400000, refund: 430000 },
+  { min: 5500000, refund: 440000 },
+  { min: 5600000, refund: 450000 },
+  { min: 5700000, refund: 460000 },
+  { min: 5800000, refund: 470000 },
+  { min: 5900000, refund: 480000 }
 ];
 
 function getTaxRefundKRW(price) {
   if (price >= 6000000) {
-    return price * 0.0818;
+    return Math.round(price * 0.0818);
   }
+
+  if (price < 30000) {
+    return 0;
+  }
+
+  let refund = 0;
+
+  for (let i = 0; i < taxTable.length; i++) {
+    if (price >= taxTable[i].min) {
+      refund = taxTable[i].refund;
+    } else {
+      break;
+    }
+  }
+
+  return refund;
+}
 
   let refund = 0;
 
