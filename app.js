@@ -46,13 +46,11 @@ function loadRates() {
 }
 
 function getStoreRate() {
-  const store = document.getElementById("store").value;
+  const exchangeRate = getNumber("exchangeRate");
 
-  if (store === "lotte") return getNumber("lotteRate");
-  if (store === "shinsegae") return getNumber("shinsegaeRate");
-  if (store === "hyundai") return getNumber("hyundaiRate");
+  if (!exchangeRate) return 0;
 
-  return 0;
+  return exchangeRate / 0.97;
 }
 
 function getStoreName() {
@@ -207,10 +205,8 @@ function calculate() {
 `♦️${dateText} 汇率更新♦️
 ♦️时间${timeText}♦️
 
-韩米：${exchangeRate}
-乐天/新罗(券)：${getNumber("lotteRate")}
-新世界(券)：${getNumber("shinsegaeRate")}
-现代(券)：${getNumber("hyundaiRate")}
+韩米：${exchangeRate.toFixed(1)}
+商品券汇率：${exchangeRate.toFixed(1)} ÷ 0.97 = ${giftRate.toFixed(1)}
 
 百货店：${storeName}
 标价：${formatNumber(price)} 韩元
