@@ -96,32 +96,32 @@ button:active {
   width: 555px;
   background: #f8e6df;
   color: #000;
-  font-family: "KaiTi", "STKaiti", "Microsoft YaHei", serif;
-  border: 1px solid #f28b8b;
+  font-family: "KaiTi", "STKaiti", "SimSun", "Microsoft YaHei", serif;
+  border: 1px solid #ff8f8f;
   overflow: hidden;
 }
 
 .quote-title {
   background: #ff8f8f;
   text-align: center;
-  font-size: 26px;
+  font-size: 27px;
   font-weight: bold;
-  line-height: 36px;
-  height: 36px;
+  line-height: 37px;
+  height: 37px;
   letter-spacing: 2px;
 }
 
 .quote-table {
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 .quote-header {
   background: #dfe5ff;
   text-align: center;
   font-size: 25px;
-  line-height: 38px;
-  height: 38px;
+  line-height: 37px;
+  height: 37px;
   font-weight: normal;
 }
 
@@ -129,18 +129,18 @@ button:active {
   background: #f7ddeb;
   text-align: center;
   font-size: 25px;
-  line-height: 38px;
-  height: 38px;
+  line-height: 37px;
+  height: 37px;
 }
 
 .quote-lines {
-  padding: 16px 4px 14px 4px;
+  padding: 17px 4px 12px 4px;
   background: #f8e6df;
 }
 
 .quote-lines div {
   font-size: 24px;
-  line-height: 36px;
-  white-space: normal;
-  margin-bottom: 18px;
+  line-height: 55px;
+  white-space: nowrap;
+  margin: 0;
 }
