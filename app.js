@@ -193,7 +193,8 @@ const rebate = rebatePercent / 100;
     return;
   }
 
-  const paymentRMB = price * (1 - rebate) / giftRate;
+  const paymentRate = exchangeRate;
+const paymentRMB = price * (1 - rebate) / paymentRate;
   const refundKRW = getTaxRefundKRW(price);
   const refundRMB = refundKRW / exchangeRate;
   const finalPrice = paymentRMB - refundRMB;
@@ -214,7 +215,7 @@ const rebate = rebatePercent / 100;
 返点：${inputRebatePercent.toFixed(1)}% + 3.0% = ${rebatePercent.toFixed(1)}%
 
 ① 实际付款
-${formatNumber(price)} × (1-${rebatePercent.toFixed(1)}%) ÷ ${giftRate.toFixed(1)}
+${formatNumber(price)} × (1-${rebatePercent.toFixed(1)}%) ÷ ${paymentRate.toFixed(1)}
 = ${formatNumber(paymentRMB)} 元
 
 ② 机场退税
@@ -228,15 +229,16 @@ ${formatNumber(paymentRMB)} - ${formatNumber(refundRMB)}
   document.getElementById("resultText").textContent = text;
 
   updateQuoteCard({
-    price,
-    giftRate,
-    rebatePercent,
-    exchangeRate,
-    paymentRMB,
-    refundKRW,
-    refundRMB,
-    finalPrice
-  });
+  price,
+  giftRate,
+  rebatePercent,
+  exchangeRate,
+  paymentRate,
+  paymentRMB,
+  refundKRW,
+  refundRMB,
+  finalPrice
+});
 }
 
 function updateQuoteCard(data) {
@@ -258,34 +260,34 @@ function updateQuoteCard(data) {
   qcRate.textContent = data.exchangeRate.toFixed(1);
 
   qcLine1.textContent =
-  "① 实际付款" + "\n" +
+qcLine1.innerHTML =
+  "① 实际付款<br>" +
   formatNumber(data.price) +
   " * (1-" +
   data.rebatePercent.toFixed(1) +
   "%) /" +
-  data.giftRate.toFixed(1) +
-  "\n" +
-  "= " +
+  data.paymentRate.toFixed(1) +
+  "<br>= " +
   formatNumber(data.paymentRMB) +
   " 元";
 
-  qcLine2.textContent =
-    "② 机场退税" +
-    formatNumber(data.refundKRW) +
-    " 韩元 / " +
-    data.exchangeRate.toFixed(1) +
-    "≈ " +
-    formatNumber(data.refundRMB) +
-    " 元";
+qcLine2.innerHTML =
+  "② 机场退税<br>" +
+  formatNumber(data.refundKRW) +
+  " 韩元 / " +
+  data.exchangeRate.toFixed(1) +
+  "<br>≈ " +
+  formatNumber(data.refundRMB) +
+  " 元";
 
-  qcLine3.textContent =
-    "③ 最终到手价" +
-    formatNumber(data.paymentRMB) +
-    " - " +
-    formatNumber(data.refundRMB) +
-    "= " +
-    formatNumber(data.finalPrice) +
-    " 元";
+qcLine3.innerHTML =
+  "③ 最终到手价<br>" +
+  formatNumber(data.paymentRMB) +
+  " - " +
+  formatNumber(data.refundRMB) +
+  "<br>= " +
+  formatNumber(data.finalPrice) +
+  " 元";
 }
 
 function copyResult() {
