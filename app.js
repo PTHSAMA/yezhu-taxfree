@@ -258,15 +258,16 @@ function updateQuoteCard(data) {
   qcRate.textContent = data.exchangeRate.toFixed(1);
 
   qcLine1.textContent =
-    "① 实际付款" +
-    formatNumber(data.price) +
-    " * (1-" +
-    data.rebatePercent.toFixed(1) +
-    "%) /" +
-    data.giftRate.toFixed(1) +
-    "= " +
-    formatNumber(data.paymentRMB) +
-    " 元";
+  "① 实际付款" + "\n" +
+  formatNumber(data.price) +
+  " * (1-" +
+  data.rebatePercent.toFixed(1) +
+  "%) /" +
+  data.giftRate.toFixed(1) +
+  "\n" +
+  "= " +
+  formatNumber(data.paymentRMB) +
+  " 元";
 
   qcLine2.textContent =
     "② 机场退税" +
