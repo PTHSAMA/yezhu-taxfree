@@ -243,53 +243,49 @@ ${formatNumber(paymentRMB)} - ${formatNumber(refundRMB)}
 
 function updateQuoteCard(data) {
   const qcPrice = document.getElementById("qc-price");
-  const qcCoupon = document.getElementById("qc-coupon");
   const qcRebate = document.getElementById("qc-rebate");
   const qcRate = document.getElementById("qc-rate");
   const qcLine1 = document.getElementById("qc-line1");
   const qcLine2 = document.getElementById("qc-line2");
   const qcLine3 = document.getElementById("qc-line3");
 
-  if (!qcPrice || !qcCoupon || !qcRebate || !qcRate || !qcLine1 || !qcLine2 || !qcLine3) {
+  if (!qcPrice || !qcRebate || !qcRate || !qcLine1 || !qcLine2 || !qcLine3) {
     return;
   }
 
-  qcPrice.textContent = formatWanKRW(data.price);
-  qcCoupon.textContent = data.giftRate.toFixed(1);
+  qcPrice.textContent = (data.price / 10000).toFixed(1) + "万";
   qcRebate.textContent = data.rebatePercent.toFixed(1) + "%";
   qcRate.textContent = data.exchangeRate.toFixed(1);
 
   qcLine1.textContent =
-qcLine1.innerHTML =
-  "① 实际付款<br>" +
-  formatNumber(data.price) +
-  " * (1-" +
-  data.rebatePercent.toFixed(1) +
-  "%) /" +
-  data.paymentRate.toFixed(1) +
-  "<br>= " +
-  formatNumber(data.paymentRMB) +
-  " 元";
+    "① 实际付款" +
+    formatNumber(data.price) +
+    " * (1-" +
+    data.rebatePercent.toFixed(1) +
+    "%) /" +
+    data.exchangeRate.toFixed(1) +
+    "= " +
+    formatNumber(data.paymentRMB) +
+    " 元";
 
-qcLine2.innerHTML =
-  "② 机场退税<br>" +
-  formatNumber(data.refundKRW) +
-  " 韩元 / " +
-  data.exchangeRate.toFixed(1) +
-  "<br>≈ " +
-  formatNumber(data.refundRMB) +
-  " 元";
+  qcLine2.textContent =
+    "② 机场退税" +
+    formatNumber(data.refundKRW) +
+    " 韩元 / " +
+    data.exchangeRate.toFixed(1) +
+    "≈ " +
+    formatNumber(data.refundRMB) +
+    " 元";
 
-qcLine3.innerHTML =
-  "③ 最终到手价<br>" +
-  formatNumber(data.paymentRMB) +
-  " - " +
-  formatNumber(data.refundRMB) +
-  "<br>= " +
-  formatNumber(data.finalPrice) +
-  " 元";
+  qcLine3.textContent =
+    "③ 最终到手价" +
+    formatNumber(data.paymentRMB) +
+    " - " +
+    formatNumber(data.refundRMB) +
+    "= " +
+    formatNumber(data.finalPrice) +
+    " 元";
 }
-
 function copyResult() {
   const text = document.getElementById("resultText").textContent;
 
