@@ -140,6 +140,7 @@ button:active {
 
 .quote-lines div {
   font-size: 24px;
-  line-height: 55px;
-  white-space: nowrap;
+  line-height: 34px;
+  white-space: pre-line;
+  margin-bottom: 16px;
 }
