@@ -174,8 +174,9 @@ function calculate() {
   const giftRate = getStoreRate();
   const storeName = getStoreName();
   const price = getNumber("price");
-  const rebatePercent = getNumber("rebate");
-  const rebate = rebatePercent / 100;
+  const inputRebatePercent = getNumber("rebate");
+const rebatePercent = inputRebatePercent + 3;
+const rebate = rebatePercent / 100;
 
   if (!exchangeRate) {
     alert("请填写韩米汇率");
@@ -210,7 +211,7 @@ function calculate() {
 
 百货店：${storeName}
 标价：${formatNumber(price)} 韩元
-返点：${rebatePercent.toFixed(1)}%
+返点：${inputRebatePercent.toFixed(1)}% + 3.0% = ${rebatePercent.toFixed(1)}%
 
 ① 实际付款
 ${formatNumber(price)} × (1-${rebatePercent.toFixed(1)}%) ÷ ${giftRate.toFixed(1)}
