@@ -257,34 +257,34 @@ function updateQuoteCard(data) {
   qcRebate.textContent = data.rebatePercent.toFixed(1) + "%";
   qcRate.textContent = data.exchangeRate.toFixed(1);
 
-  qcLine1.textContent =
-    "① 实际付款" +
-    formatNumber(data.price) +
-    " * (1-" +
-    data.rebatePercent.toFixed(1) +
-    "%) /" +
-    data.exchangeRate.toFixed(1) +
-    "= " +
-    formatNumber(data.paymentRMB) +
-    " 元";
+ qcLine1.innerHTML =
+  "① 实际付款" +
+  formatNumber(data.price) +
+  " * (1-" +
+  data.rebatePercent.toFixed(1) +
+  "%) /" +
+  data.exchangeRate.toFixed(1) +
+  "<br>= " +
+  formatNumber(data.paymentRMB) +
+  " 元";
 
-  qcLine2.textContent =
-    "② 机场退税" +
-    formatNumber(data.refundKRW) +
-    " 韩元 / " +
-    data.exchangeRate.toFixed(1) +
-    "≈ " +
-    formatNumber(data.refundRMB) +
-    " 元";
+qcLine2.innerHTML =
+  "② 机场退税" +
+  formatNumber(data.refundKRW) +
+  " 韩元 / " +
+  data.exchangeRate.toFixed(1) +
+  "<br>≈ " +
+  formatNumber(data.refundRMB) +
+  " 元";
 
-  qcLine3.textContent =
-    "③ 最终到手价" +
-    formatNumber(data.paymentRMB) +
-    " - " +
-    formatNumber(data.refundRMB) +
-    "= " +
-    formatNumber(data.finalPrice) +
-    " 元";
+qcLine3.innerHTML =
+  "③ 最终到手价" +
+  formatNumber(data.paymentRMB) +
+  " - " +
+  formatNumber(data.refundRMB) +
+  "<br>= " +
+  formatNumber(data.finalPrice) +
+  " 元";
 }
 function copyResult() {
   const text = document.getElementById("resultText").textContent;
