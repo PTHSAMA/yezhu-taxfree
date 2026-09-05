@@ -89,13 +89,13 @@ button:active {
   font-size: 15px;
 }
 
-/* 图片报价预览区域：手机端自适应 */
+/* 手机页面里的报价预览，自适应屏幕 */
 .quote-card-wrap {
   width: 100%;
   overflow: hidden;
 }
 
-/* 报价图片本体 */
+/* 页面预览卡片 */
 #quoteCard {
   width: 100%;
   max-width: 600px;
@@ -145,7 +145,7 @@ button:active {
 }
 
 .quote-lines div {
-  font-size: clamp(17px, 4.7vw, 23px);
+  font-size: clamp(17px, 4.6vw, 23px);
   line-height: 1.55;
   white-space: normal;
   word-break: keep-all;
@@ -154,6 +154,44 @@ button:active {
 
 .quote-lines div:last-child {
   margin-bottom: 0;
+}
+
+/* 导出图片专用样式：固定600px，不受手机屏幕宽度影响 */
+.export-card {
+  width: 600px !important;
+  max-width: 600px !important;
+  min-width: 600px !important;
+  margin: 0 !important;
+}
+
+.export-card .quote-title {
+  font-size: 30px !important;
+  line-height: 42px !important;
+  padding: 0 !important;
+}
+
+.export-card .quote-header {
+  font-size: 28px !important;
+  line-height: 42px !important;
+  padding: 0 !important;
+}
+
+.export-card .quote-value {
+  font-size: 28px !important;
+  line-height: 42px !important;
+  padding: 0 !important;
+}
+
+.export-card .quote-lines {
+  padding: 18px 10px 14px 10px !important;
+}
+
+.export-card .quote-lines div {
+  font-size: 23px !important;
+  line-height: 36px !important;
+  white-space: normal !important;
+  word-break: keep-all !important;
+  margin-bottom: 16px !important;
 }
 
 /* 历史记录 */
@@ -181,7 +219,7 @@ button:active {
   border-radius: 8px;
 }
 
-/* 手机端进一步优化 */
+/* 手机端优化 */
 @media (max-width: 480px) {
   .app {
     padding: 10px;
