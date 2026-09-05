@@ -13,10 +13,6 @@ function formatNumber(num) {
   return Math.round(Number(num || 0)).toLocaleString("zh-CN");
 }
 
-function formatWanKRW(num) {
-  return Math.round(Number(num || 0) / 10000) + "万";
-}
-
 function saveRates() {
   const data = {
     exchangeRate: getNumber("exchangeRate"),
@@ -45,16 +41,11 @@ function loadRates() {
   }
 }
 
-function getStoreRate() {
-  const exchangeRate = getNumber("exchangeRate");
-
-  if (!exchangeRate) return 0;
-
-  return exchangeRate / 0.97;
-}
-
 function getStoreName() {
-  const store = document.getElementById("store").value;
+  const storeEl = document.getElementById("store");
+  if (!storeEl) return "";
+
+  const store = storeEl.value;
 
   if (store === "lotte") return "乐天 / 新罗";
   if (store === "shinsegae") return "新世界";
@@ -63,6 +54,7 @@ function getStoreName() {
   return "";
 }
 
+// NICE TAX FREE 退税表
 // 600万以下：阶梯退税
 // 600万以上：标价 × 0.0818
 const taxTable = [
@@ -171,20 +163,17 @@ function getTaxRefundKRW(price) {
 
 function calculate() {
   const exchangeRate = getNumber("exchangeRate");
-  const giftRate = getStoreRate();
   const storeName = getStoreName();
   const price = getNumber("price");
+
+  // 输入的是基础返点，例如 1.8
+  // 实际显示和计算：1.8 + 3 = 4.8%
   const inputRebatePercent = getNumber("rebate");
-const rebatePercent = inputRebatePercent + 3;
-const rebate = rebatePercent / 100;
+  const rebatePercent = inputRebatePercent + 3;
+  const rebate = rebatePercent / 100;
 
   if (!exchangeRate) {
-    alert("请填写韩米汇率");
-    return;
-  }
-
-  if (!giftRate) {
-    alert("请填写商品券价格");
+    alert("请填写当天汇率");
     return;
   }
 
@@ -193,10 +182,19 @@ const rebate = rebatePercent / 100;
     return;
   }
 
-  const paymentRate = exchangeRate;
-const paymentRMB = price * (1 - rebate) / paymentRate;
+  if (rebatePercent < 0 || rebatePercent >= 100) {
+    alert("返点比例不正确");
+    return;
+  }
+
+  // 实际付款：标价 × (1 - 券+返点) ÷ 当天汇率
+  const paymentRMB = price * (1 - rebate) / exchangeRate;
+
+  // 退税：按标价计算
   const refundKRW = getTaxRefundKRW(price);
   const refundRMB = refundKRW / exchangeRate;
+
+  // 最终到手价
   const finalPrice = paymentRMB - refundRMB;
 
   const now = new Date();
@@ -208,14 +206,13 @@ const paymentRMB = price * (1 - rebate) / paymentRate;
 ♦️时间${timeText}♦️
 
 韩米：${exchangeRate.toFixed(1)}
-商品券汇率：${exchangeRate.toFixed(1)} ÷ 0.97 = ${giftRate.toFixed(1)}
 
 百货店：${storeName}
 标价：${formatNumber(price)} 韩元
-返点：${inputRebatePercent.toFixed(1)}% + 3.0% = ${rebatePercent.toFixed(1)}%
+券+返点：${rebatePercent.toFixed(1)}%
 
 ① 实际付款
-${formatNumber(price)} × (1-${rebatePercent.toFixed(1)}%) ÷ ${paymentRate.toFixed(1)}
+${formatNumber(price)} × (1-${rebatePercent.toFixed(1)}%) ÷ ${exchangeRate.toFixed(1)}
 = ${formatNumber(paymentRMB)} 元
 
 ② 机场退税
@@ -226,19 +223,18 @@ ${formatNumber(refundKRW)} 韩元 ÷ ${exchangeRate.toFixed(1)}
 ${formatNumber(paymentRMB)} - ${formatNumber(refundRMB)}
 = ${formatNumber(finalPrice)} 元`;
 
-  document.getElementById("resultText").textContent = text;
+  const resultText = document.getElementById("resultText");
+  if (resultText) resultText.textContent = text;
 
   updateQuoteCard({
-  price,
-  giftRate,
-  rebatePercent,
-  exchangeRate,
-  paymentRate,
-  paymentRMB,
-  refundKRW,
-  refundRMB,
-  finalPrice
-});
+    price,
+    rebatePercent,
+    exchangeRate,
+    paymentRMB,
+    refundKRW,
+    refundRMB,
+    finalPrice
+  });
 }
 
 function updateQuoteCard(data) {
@@ -257,37 +253,41 @@ function updateQuoteCard(data) {
   qcRebate.textContent = data.rebatePercent.toFixed(1) + "%";
   qcRate.textContent = data.exchangeRate.toFixed(1);
 
- qcLine1.innerHTML =
-  "① 实际付款" +
-  formatNumber(data.price) +
-  " * (1-" +
-  data.rebatePercent.toFixed(1) +
-  "%) /" +
-  data.exchangeRate.toFixed(1) +
-  "<br>= " +
-  formatNumber(data.paymentRMB) +
-  " 元";
+  qcLine1.innerHTML =
+    "① 实际付款" +
+    formatNumber(data.price) +
+    " * (1-" +
+    data.rebatePercent.toFixed(1) +
+    "%) /" +
+    data.exchangeRate.toFixed(1) +
+    "<br>= " +
+    formatNumber(data.paymentRMB) +
+    " 元";
 
-qcLine2.innerHTML =
-  "② 机场退税" +
-  formatNumber(data.refundKRW) +
-  " 韩元 / " +
-  data.exchangeRate.toFixed(1) +
-  "<br>≈ " +
-  formatNumber(data.refundRMB) +
-  " 元";
+  qcLine2.innerHTML =
+    "② 机场退税" +
+    formatNumber(data.refundKRW) +
+    " 韩元 / " +
+    data.exchangeRate.toFixed(1) +
+    "<br>≈ " +
+    formatNumber(data.refundRMB) +
+    " 元";
 
-qcLine3.innerHTML =
-  "③ 最终到手价" +
-  formatNumber(data.paymentRMB) +
-  " - " +
-  formatNumber(data.refundRMB) +
-  "<br>= " +
-  formatNumber(data.finalPrice) +
-  " 元";
+  qcLine3.innerHTML =
+    "③ 最终到手价" +
+    formatNumber(data.paymentRMB) +
+    " - " +
+    formatNumber(data.refundRMB) +
+    "<br>= " +
+    formatNumber(data.finalPrice) +
+    " 元";
 }
+
 function copyResult() {
-  const text = document.getElementById("resultText").textContent;
+  const resultText = document.getElementById("resultText");
+  if (!resultText) return;
+
+  const text = resultText.textContent;
 
   if (!text || text.includes("请输入数据")) {
     alert("请先计算报价");
@@ -329,7 +329,10 @@ function fallbackCopy(text) {
 }
 
 function saveQuoteHistory() {
-  const text = document.getElementById("resultText").textContent;
+  const resultText = document.getElementById("resultText");
+  if (!resultText) return;
+
+  const text = resultText.textContent;
 
   if (!text || text.includes("请输入数据")) {
     alert("请先计算报价");
