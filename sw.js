@@ -1,4 +1,4 @@
-const CACHE_NAME = "yezhu-taxfree-v10";
+const CACHE_NAME = "yezhu-taxfree-v11";
 
 const ASSETS = [
   "./",
