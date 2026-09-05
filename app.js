@@ -1,4 +1,5 @@
 let lastQuoteData = null;
+
 function getNumber(id) {
   const el = document.getElementById(id);
   if (!el) return 0;
@@ -167,8 +168,8 @@ function calculate() {
   const storeName = getStoreName();
   const price = getNumber("price");
 
-  // 输入的是基础返点，例如 1.8
-  // 实际计算和显示：1.8 + 3 = 4.8%
+  // 输入基础返点，例如 1.8
+  // 实际计算：1.8 + 3 = 4.8%
   const inputRebatePercent = getNumber("rebate");
   const rebatePercent = inputRebatePercent + 3;
   const rebate = rebatePercent / 100;
@@ -188,10 +189,10 @@ function calculate() {
     return;
   }
 
-  // 实际付款：标价 × (1 - 券+返点) ÷ 当天汇率
+  // 实际付款 = 标价 × (1 - 券+返点) ÷ 当天汇率
   const paymentRMB = price * (1 - rebate) / exchangeRate;
 
-  // 退税：按标价计算
+  // 退税按标价计算
   const refundKRW = getTaxRefundKRW(price);
   const refundRMB = refundKRW / exchangeRate;
 
@@ -227,7 +228,7 @@ ${formatNumber(paymentRMB)} - ${formatNumber(refundRMB)}
   const resultText = document.getElementById("resultText");
   if (resultText) resultText.textContent = text;
 
-  updateQuoteCard({
+  lastQuoteData = {
     price,
     rebatePercent,
     exchangeRate,
@@ -235,7 +236,9 @@ ${formatNumber(paymentRMB)} - ${formatNumber(refundRMB)}
     refundKRW,
     refundRMB,
     finalPrice
-  });
+  };
+
+  updateQuoteCard(lastQuoteData);
 }
 
 function updateQuoteCard(data) {
@@ -402,51 +405,136 @@ function escapeHtml(text) {
     .replace(/>/g, "&gt;");
 }
 
+// 固定 Canvas 生成报价图片
+// 不再截图网页，所以你和员工生成的图片会完全一致
 function downloadQuoteImage() {
-  const target = document.getElementById("quoteCard");
-
-  if (!target) {
-    alert("没有找到报价图片区域");
+  if (!lastQuoteData) {
+    alert("请先计算报价");
     return;
   }
 
-  if (!window.html2canvas) {
-    alert("图片生成库加载失败，请刷新页面后重试");
-    return;
+  const data = lastQuoteData;
+
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+
+  const width = 900;
+  const height = 680;
+  const scale = 2;
+
+  canvas.width = width * scale;
+  canvas.height = height * scale;
+
+  ctx.scale(scale, scale);
+
+  // 背景
+  ctx.fillStyle = "#f8e6df";
+  ctx.fillRect(0, 0, width, height);
+
+  // 外边框
+  ctx.strokeStyle = "#ff8f8f";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(1, 1, width - 2, height - 2);
+
+  // 标题背景
+  ctx.fillStyle = "#ff858c";
+  ctx.fillRect(0, 0, width, 72);
+
+  // 标题文字
+  ctx.fillStyle = "#000";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.font = "bold 46px Microsoft YaHei, SimHei, Arial, sans-serif";
+  ctx.fillText("野猪购物返点", width / 2, 36);
+
+  // 表头背景
+  ctx.fillStyle = "#dfe5ff";
+  ctx.fillRect(0, 72, width, 72);
+
+  const colW = width / 3;
+
+  ctx.fillStyle = "#000";
+  ctx.font = "40px Microsoft YaHei, SimHei, Arial, sans-serif";
+  ctx.fillText("百货店标价", colW * 0.5, 108);
+  ctx.fillText("券+返点", colW * 1.5, 108);
+  ctx.fillText("汇率", colW * 2.5, 108);
+
+  // 数值背景
+  ctx.fillStyle = "#f7ddeb";
+  ctx.fillRect(0, 144, width, 72);
+
+  ctx.fillStyle = "#000";
+  ctx.font = "40px Microsoft YaHei, SimHei, Arial, sans-serif";
+  ctx.fillText((data.price / 10000).toFixed(1) + "万", colW * 0.5, 180);
+  ctx.fillText(data.rebatePercent.toFixed(1) + "%", colW * 1.5, 180);
+  ctx.fillText(data.exchangeRate.toFixed(1), colW * 2.5, 180);
+
+  // 内容文字
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
+  ctx.fillStyle = "#000";
+  ctx.font = "34px Microsoft YaHei, SimHei, Arial, sans-serif";
+
+  const left = 26;
+  let y = 260;
+  const lineHeight = 50;
+  const groupGap = 32;
+
+  const line1 =
+    "① 实际付款" +
+    formatNumber(data.price) +
+    " * (1-" +
+    data.rebatePercent.toFixed(1) +
+    "%) /" +
+    data.exchangeRate.toFixed(1);
+
+  const line2 =
+    "② 机场退税" +
+    formatNumber(data.refundKRW) +
+    " 韩元 / " +
+    data.exchangeRate.toFixed(1);
+
+  const line3 =
+    "③ 最终到手价" +
+    formatNumber(data.paymentRMB) +
+    " - " +
+    formatNumber(data.refundRMB);
+
+  drawFitText(ctx, line1, left, y, width - 52, 34);
+  y += lineHeight;
+  drawFitText(ctx, "= " + formatNumber(data.paymentRMB) + " 元", left, y, width - 52, 34);
+
+  y += lineHeight + groupGap;
+
+  drawFitText(ctx, line2, left, y, width - 52, 34);
+  y += lineHeight;
+  drawFitText(ctx, "≈ " + formatNumber(data.refundRMB) + " 元", left, y, width - 52, 34);
+
+  y += lineHeight + groupGap;
+
+  drawFitText(ctx, line3, left, y, width - 52, 34);
+  y += lineHeight;
+  drawFitText(ctx, "= " + formatNumber(data.finalPrice) + " 元", left, y, width - 52, 34);
+
+  const link = document.createElement("a");
+  link.download = "野猪购物返点报价.png";
+  link.href = canvas.toDataURL("image/png");
+  link.click();
+}
+
+// 单行自动缩小，防止金额大时被截断
+function drawFitText(ctx, text, x, y, maxWidth, baseSize) {
+  let size = baseSize;
+
+  while (size > 26) {
+    ctx.font = `${size}px Microsoft YaHei, SimHei, Arial, sans-serif`;
+    if (ctx.measureText(text).width <= maxWidth) {
+      break;
+    }
+    size -= 1;
   }
 
-  // 克隆一份报价卡片，专门用于导出图片
-  // 这样手机页面可以自适应，但导出的图片固定为600px宽
-  const clone = target.cloneNode(true);
-  clone.classList.add("export-card");
-
-  const exportBox = document.createElement("div");
-  exportBox.style.position = "fixed";
-  exportBox.style.left = "-9999px";
-  exportBox.style.top = "0";
-  exportBox.style.width = "600px";
-  exportBox.style.background = "#f8e6df";
-  exportBox.appendChild(clone);
-
-  document.body.appendChild(exportBox);
-
-  html2canvas(clone, {
-    scale: 3,
-    backgroundColor: "#f8e6df",
-    useCORS: true,
-    width: 600,
-    windowWidth: 600
-  }).then(function (canvas) {
-    const link = document.createElement("a");
-    link.download = "野猪购物返点报价.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-
-    document.body.removeChild(exportBox);
-  }).catch(function () {
-    document.body.removeChild(exportBox);
-    alert("图片生成失败，请刷新页面后重试");
-  });
+  ctx.fillText(text, x, y);
 }
 
 loadRates();
