@@ -167,7 +167,7 @@ function calculate() {
   const price = getNumber("price");
 
   // 输入的是基础返点，例如 1.8
-  // 实际显示和计算：1.8 + 3 = 4.8%
+  // 实际计算和显示：1.8 + 3 = 4.8%
   const inputRebatePercent = getNumber("rebate");
   const rebatePercent = inputRebatePercent + 3;
   const rebate = rebatePercent / 100;
@@ -414,16 +414,36 @@ function downloadQuoteImage() {
     return;
   }
 
-  html2canvas(target, {
+  // 克隆一份报价卡片，专门用于导出图片
+  // 这样手机页面可以自适应，但导出的图片固定为600px宽
+  const clone = target.cloneNode(true);
+  clone.classList.add("export-card");
+
+  const exportBox = document.createElement("div");
+  exportBox.style.position = "fixed";
+  exportBox.style.left = "-9999px";
+  exportBox.style.top = "0";
+  exportBox.style.width = "600px";
+  exportBox.style.background = "#f8e6df";
+  exportBox.appendChild(clone);
+
+  document.body.appendChild(exportBox);
+
+  html2canvas(clone, {
     scale: 3,
     backgroundColor: "#f8e6df",
-    useCORS: true
+    useCORS: true,
+    width: 600,
+    windowWidth: 600
   }).then(function (canvas) {
     const link = document.createElement("a");
     link.download = "野猪购物返点报价.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
+
+    document.body.removeChild(exportBox);
   }).catch(function () {
+    document.body.removeChild(exportBox);
     alert("图片生成失败，请刷新页面后重试");
   });
 }
