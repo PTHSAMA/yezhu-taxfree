@@ -1,3 +1,4 @@
+let lastQuoteData = null;
 function getNumber(id) {
   const el = document.getElementById(id);
   if (!el) return 0;
